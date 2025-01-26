@@ -42,7 +42,9 @@ namespace EatenDLP
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
+            string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
             string downloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/download/2024.10.22/yt-dlp.exe";
+            string ffmpegUrl = "https://media.githubusercontent.com/media/minottoplus/EatenDLP/refs/heads/master/EatenDLP/assets/ffmpeg.exe";
 
             try
             {
@@ -54,13 +56,14 @@ namespace EatenDLP
 
                 // ダウンロードを実行 (非同期)
                 await DownloadFileAsync(downloadUrl, exePath);
+                await DownloadFileAsync(ffmpegUrl, ffmpegPath);
 
 
                 // ダウンロード完了後にアップデートを実行 (非同期)
                 await UpdateYtDlpAsync(exePath);
 
 
-                MessageBox.Show("正常にダウンロードとアップデートが完了しました。", "完了", MessageBoxButton.OK);
+                MessageBox.Show("正常にダウンロードが完了しました。", "完了", MessageBoxButton.OK);
                 this.Close();
             }
             catch (Exception ex)

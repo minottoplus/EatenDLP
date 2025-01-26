@@ -43,6 +43,7 @@
                     <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Go}" Content="See Github"/>
                 </Button>
                 <Button Grid.Row="1" Margin="10,0,0,0" Click="Update_Click">Update yt-dlp</Button>
+                <Button Grid.Row="1" Margin="10,0,0,0" Click="Download_Click">Redownload dependencies</Button>
             </StackPanel>
         </Grid>
 

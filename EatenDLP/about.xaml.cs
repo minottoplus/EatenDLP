@@ -31,6 +31,11 @@ namespace EatenDLP
             ytDlpUpdate DlpUpdate = new ytDlpUpdate();
             DlpUpdate.ShowDialog();
         }
+        private void Download_Click(object sender, RoutedEventArgs e)
+        {
+            ytDlpDownload DlpDownload = new ytDlpDownload();
+            DlpDownload.ShowDialog();
+        }
 
         private void Github_Click(object sender, RoutedEventArgs e)
         {

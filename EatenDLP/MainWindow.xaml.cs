@@ -36,13 +36,15 @@ namespace EatenDLP
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //変数設定
-            string appDataPath = System.Environment.GetEnvironmentVariable("APPDATA");
-            string EatenDlpFolderPath = System.IO.Path.Combine(appDataPath, "EatenDLP");
-            string exePath = System.IO.Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
+            string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
+            string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
+            string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
+            string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
             string downloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/download/2024.10.22/yt-dlp.exe";
+            string ffmpegUrl = "https://media.githubusercontent.com/media/minottoplus/EatenDLP/refs/heads/master/EatenDLP/assets/ffmpeg.exe";
 
             //exePathが存在するか
-            if (File.Exists(exePath))
+            if (File.Exists(exePath) && File.Exists(ffmpegPath))
             {
                 // exePath が存在する場合の処理
                 Console.WriteLine($"yt-dlp.exe は存在します: {exePath}");
@@ -50,7 +52,7 @@ namespace EatenDLP
             else
             {
                 //exePathが存在しない場合の処理
-                MessageBox.Show("yt-dlpが見つかりません。yt-dlpのダウンロードを行います。",
+                MessageBox.Show("必須ファイルが見つかりません。ダウンロードを行います。",
                     "エラー",
                     MessageBoxButton.OK);
 
@@ -138,33 +140,34 @@ namespace EatenDLP
             string formatCode = "";
             switch (quality)
             {
-                case 0: // 1080p (MP4)
-                    formatCode = "-f bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]";
-                    break;
-                case 1: // 720p (MP4)
-                    formatCode = "-f bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
-                    break;
-                case 2: // 480p (MP4)
-                    formatCode = "-f bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
-                    break;
-                case 3: // 360p (MP4)
-                    formatCode = "-f bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
-                    break;
-                case 4: // 240p (MP4)
-                    formatCode = "-f bestvideo[height<=240][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
-                    break;
-                case 5: // 144p (MP4)
-                    formatCode = "-f bestvideo[height<=144][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
-                    break;
-                case 6: // Best Quality (MP4)
+                case 0: // Best Quality (MP4)
                     formatCode = "-f bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]";
                     break;
-                case 7: // Best Quality (Only MP3)
+                case 1: // Best Quality (Only MP3)
                     formatCode = "-x --audio-format mp3";
                     break;
-                case 8: // Best Quality (Only WAV)
+                case 2: // Best Quality (Only WAV)
                     formatCode = "-x --audio-format wav";
                     break;
+                case 3: // 1080p (MP4)
+                    formatCode = "-f bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]";
+                    break;
+                case 4: // 720p (MP4)
+                    formatCode = "-f bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 5: // 480p (MP4)
+                    formatCode = "-f bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 6: // 360p (MP4)
+                    formatCode = "-f bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 7: // 240p (MP4)
+                    formatCode = "-f bestvideo[height<=240][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 8: // 144p (MP4)
+                    formatCode = "-f bestvideo[height<=144][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+
 
             }
             command += " " + formatCode;

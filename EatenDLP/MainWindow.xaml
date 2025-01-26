@@ -68,15 +68,15 @@
                 <TextBlock FontFamily="segoe UI" VerticalAlignment="Center" FontSize="15" Grid.Column="0">Quality</TextBlock>
 
                 <ComboBox x:Name="Quality_ComboBox" SelectionChanged="Quality_Changed" SelectedIndex="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <ComboBoxItem Content="Best Quality (MP4)" />
+                    <ComboBoxItem Content="Best Quality (Only MP3)" />
+                    <ComboBoxItem Content="Best Quality (Only WAV)" />
                     <ComboBoxItem Content="1080p (MP4)" />
                     <ComboBoxItem Content="720p (MP4)" />
                     <ComboBoxItem Content="480p (MP4)" />
                     <ComboBoxItem Content="360p (MP4)" />
                     <ComboBoxItem Content="240p (MP4)" />
                     <ComboBoxItem Content="144p (MP4)" />
-                    <ComboBoxItem Content="Best Quality (MP4)" />
-                    <ComboBoxItem Content="Best Quality (Only MP3)" />
-                    <ComboBoxItem Content="Best Quality (Only WAV)" />
                 </ComboBox>
             </Grid>
 
