@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using iNKORE.UI.WPF.Modern;
 using iNKORE.UI.WPF.Modern.Controls;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
+using Path = System.IO.Path;
 
 namespace EatenDLP
 {
@@ -128,12 +129,145 @@ namespace EatenDLP
 
 
 
+        public static string GenerateCommand(string url, int quality, string outputPath)
+        {
+            // 基本コマンド
+            string command = "";
+
+            // 品質オプション
+            string formatCode = "";
+            switch (quality)
+            {
+                case 0: // 1080p (MP4)
+                    formatCode = "-f bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]";
+                    break;
+                case 1: // 720p (MP4)
+                    formatCode = "-f bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 2: // 480p (MP4)
+                    formatCode = "-f bestvideo[height<=480][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 3: // 360p (MP4)
+                    formatCode = "-f bestvideo[height<=360][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 4: // 240p (MP4)
+                    formatCode = "-f bestvideo[height<=240][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 5: // 144p (MP4)
+                    formatCode = "-f bestvideo[height<=144][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
+                    break;
+                case 6: // Best Quality (MP4)
+                    formatCode = "-f bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]";
+                    break;
+                case 7: // Best Quality (Only MP3)
+                    formatCode = "-x --audio-format mp3";
+                    break;
+                case 8: // Best Quality (Only WAV)
+                    formatCode = "-x --audio-format wav";
+                    break;
+
+            }
+            command += " " + formatCode;
+
+            // 出力オプション
+            if (!string.IsNullOrEmpty(outputPath))
+            {
+                command += $" -o \"{Path.Combine(outputPath, "%(title)s.%(ext)s")}\""; // 出力パスとファイル名テンプレート
+            }
+
+            // URL
+            command += $" \"{url}\"";
+
+            return command;
+        }
+
+
+
+        public async void ExecuteCommand(string command)
+        {
+            try
+            {
+                string appDataPath = System.Environment.GetEnvironmentVariable("APPDATA");
+                string EatenDlpFolderPath = System.IO.Path.Combine(appDataPath, "EatenDLP");
+                string exePath = System.IO.Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
+
+
+
+
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = command,
+                    UseShellExecute = false,
+                    CreateNoWindow = false
+                };
+
+                using (Process process = new Process { StartInfo = psi })
+                {
+                    process.Start();
+                    await Task.Run(() => process.WaitForExit());
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+                // 例外処理
+            }
+        }
+
+
+        public static string GetEatenDlpFolderPath()
+        {
+            // Documentsフォルダのパスを取得
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            // EatenDLPフォルダのパスを結合
+            string eatenDlpFolderPath = Path.Combine(documentsPath, "EatenDLP");
+
+            // EatenDLPフォルダが存在するか確認
+            if (!Directory.Exists(eatenDlpFolderPath))
+            {
+                Directory.CreateDirectory(eatenDlpFolderPath);
+                Console.WriteLine("EatenDLPフォルダを作成しました: " + eatenDlpFolderPath); //デバッグ用
+            }
+            else
+            {
+                Console.WriteLine("EatenDLPフォルダは既に存在します: " + eatenDlpFolderPath); //デバッグ用
+            }
+
+            return eatenDlpFolderPath;
+        }
+
+
+
+
+
 
 
 
         private void Download_Button_Click(object sender, RoutedEventArgs e)
         {
-            Download_Button_Enable();
+            string url = URL_textBox.Text; // 例
+            int quality = Quality_ComboBox.SelectedIndex;
+
+            string outputPath = ""; // 例
+
+
+            if (Default_RadioButton.IsChecked == true)
+            {
+                outputPath = GetEatenDlpFolderPath(); // 例
+
+            }
+            else
+            {
+
+                outputPath = Location_TextBox.Text; // 例
+            }
+
+            string ytDlpCommand = GenerateCommand(url, quality, outputPath);
+            Console.WriteLine(ytDlpCommand);
+
+            ExecuteCommand(ytDlpCommand);
         }
 
 

@@ -36,7 +36,7 @@ namespace EatenDLP
         {
             ProcessStartInfo pi = new ProcessStartInfo()
             {
-                FileName = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                FileName = "https://github.com/minottoplus/EatenDLP",
                 UseShellExecute = true,
             };
 

@@ -17,6 +17,7 @@
         Title="Downloading..." Height="95" Width="270"
         
         
+        ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseDown">
 
 

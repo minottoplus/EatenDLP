@@ -12,11 +12,13 @@
         ui:TitleBar.Height="0"
         
         
+        
         mc:Ignorable="d"
         
         Title="Downloading..." Height="95" Width="270"
         
         
+        ResizeMode="NoResize"
         MouseLeftButtonDown="Window_MouseDown">
     
     
