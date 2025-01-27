@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using iNKORE.UI.WPF.Modern;
 using iNKORE.UI.WPF.Modern.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Path = System.IO.Path;
 
@@ -273,8 +274,17 @@ namespace EatenDLP
             ExecuteCommand(ytDlpCommand);
         }
 
+        private void Browse_Button_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true; // フォルダ選択モードにする
+            dialog.Title = "フォルダを選択してください";
 
-
-
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                string selectedFolderPath = dialog.FileName;
+                Location_TextBox.Text = selectedFolderPath;
+            }
+        }
     }
 }
