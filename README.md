@@ -1,4 +1,4 @@
-![header](https://github.com/user-attachments/assets/3170bb16-3d4b-48f5-9011-c280479b8889)
+![header](https://github.com/user-attachments/assets/29188617-4034-45d9-b17a-6f336a7fe676)
 
 <h1 align="center"> EatenDLP </h1>
 <p align="center">A Fluent UI YouTube downloader created with WPF</p>
