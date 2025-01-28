@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EatenDLP"
         Style="{DynamicResource DefaultWindowStyle}"
+
         
         
         xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
@@ -12,6 +13,8 @@
         ui:WindowHelper.SystemBackdropType="Mica"
         ui:TitleBar.Height="36"
         
+        
+        Icon="/assets/icon.ico"
         
         
         mc:Ignorable="d"
@@ -90,7 +93,7 @@
                     <TextBlock FontFamily="segoe UI" VerticalAlignment="Center" FontSize="15" Grid.Column="0">Save Location</TextBlock>
                     <StackPanel Orientation="Horizontal" Grid.Column="2">
                         <RadioButton GroupName="location" x:Name="Default_RadioButton" IsChecked="True" Unchecked="Default_Unchecked">Documents/EatenDLP</RadioButton>
-                        <RadioButton GroupName="location" Margin="20,0,0,0" Unchecked="Custom_Unchecked">Custom</RadioButton>
+                        <RadioButton GroupName="location" x:Name="Custom_RadioButton" Margin="20,0,0,0" Unchecked="Custom_Unchecked">Custom</RadioButton>
                     </StackPanel>
                 </Grid>
 

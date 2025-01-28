@@ -14,9 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using iNKORE.UI.WPF.Modern;
 using iNKORE.UI.WPF.Modern.Controls;
+using System.Configuration;
+
 using Microsoft.WindowsAPICodePack.Dialogs;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Path = System.IO.Path;
+using System.Security.Claims;
 
 namespace EatenDLP
 {
@@ -25,24 +28,36 @@ namespace EatenDLP
     /// </summary>
     public partial class MainWindow : Window
     {
+
+
+
+
         public MainWindow()
         {
             InitializeComponent();
             
             Loaded += MainWindow_Loaded; // Loadedイベントハンドラを登録
-
+                                         // ウィンドウが閉じられる際のイベントハンドラー
+            this.Closing += MainWindow_Closing;
 
         }
 
+
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //変数設定
+        //変数設定
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
             string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
+            string iniPath = Path.Combine(EatenDlpFolderPath, "settings.ini");
             string downloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/download/2024.10.22/yt-dlp.exe";
             string ffmpegUrl = "https://media.githubusercontent.com/media/minottoplus/EatenDLP/refs/heads/master/EatenDLP/assets/ffmpeg.exe";
+
+
+            LoadSettings(iniPath);
+
 
             //exePathが存在するか
             if (File.Exists(exePath) && File.Exists(ffmpegPath))
@@ -62,13 +77,120 @@ namespace EatenDLP
 
 
             }
-
-
-            Quality_ComboBox.SelectedIndex = 0;
-            Download_Button.IsEnabled = false;
-            Location_TextBox.IsEnabled = false;
-            Browse_Button.IsEnabled = false;
         }
+
+
+
+
+
+
+
+
+
+        private void LoadSettings(string settingsFilePath)
+        {
+            string URL = "";
+            int Quality = 0;
+            bool IsDefault = true;
+            string Location = "";
+
+            if (File.Exists(settingsFilePath))
+            {
+                Dictionary<string, string> settings = new Dictionary<string, string>();
+                using (StreamReader reader = new StreamReader(settingsFilePath))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] parts = line.Split('=');
+                        if (parts.Length == 2)
+                        {
+                            settings[parts[0]] = parts[1];
+                        }
+                    }
+                }
+
+                // 設定をUIに反映
+                if (settings.ContainsKey("Quality"))
+                {
+                    if (int.TryParse(settings["Quality"], out int quality))
+                    {
+                        Quality_ComboBox.SelectedIndex = quality;
+                    }
+                }
+                if (settings.ContainsKey("IsDefault"))
+                {
+                    if (bool.TryParse(settings["IsDefault"], out bool isDefault))
+                    {
+                        Default_RadioButton.IsChecked = isDefault;
+                    }
+                }
+                if (settings.ContainsKey("IsCustom"))
+                {
+                    if (bool.TryParse(settings["IsCustom"], out bool isCustom))
+                    {
+                        Custom_RadioButton.IsChecked = isCustom;
+                    }
+                }
+                if (settings.ContainsKey("Location"))
+                {
+                    Location_TextBox.Text = settings["Location"];
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        private void SaveSettings(string URL, int Quality, bool IsDefault, bool IsCustom, string Location, string settingsFilePath)
+        {
+            // 設定データをDictionaryに格納
+            Dictionary<string, string> settings = new Dictionary<string, string>();
+            settings["Quality"] = Quality.ToString();
+            settings["IsDefault"] = IsDefault.ToString();
+            settings["IsCustom"] = IsCustom.ToString();
+            settings["Location"] = Location;
+
+            // INIファイルに書き込み
+            using (StreamWriter writer = new StreamWriter(settingsFilePath))
+            {
+                foreach (var setting in settings)
+                {
+                    writer.WriteLine($"{setting.Key}={setting.Value}");
+                }
+            }
+        }
+
+
+
+
+
+
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
+            string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
+            string iniPath = Path.Combine(EatenDlpFolderPath, "settings.ini");
+
+            bool IsDefault = Default_RadioButton.IsChecked ?? true; // 'bool?' から 'bool' への変換
+            bool IsCustom = Custom_RadioButton.IsChecked ?? true; // 'bool?' から 'bool' への変換
+
+
+            SaveSettings(URL_textBox.Text, Quality_ComboBox.SelectedIndex, IsDefault, IsCustom, Location_TextBox.Text, iniPath);
+        }
+
+
+
+
+
 
         private void Info_Click(object sender, RoutedEventArgs e)
         {
