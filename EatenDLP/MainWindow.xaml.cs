@@ -89,6 +89,11 @@ namespace EatenDLP
 
         private void LoadSettings(string settingsFilePath)
         {
+            Location_TextBox.IsEnabled = false;
+            Browse_Button.IsEnabled = false;
+            Download_Button.IsEnabled = false;
+
+
             string URL = "";
             int Quality = 0;
             bool IsDefault = true;
