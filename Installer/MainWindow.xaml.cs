@@ -231,46 +231,47 @@ namespace Installer
         static async Task<string[]> GetLatestReleaseAssetUrl(string owner, string repo, string targetFileName)
         {
             string[] returns = new string[2];
-
-
-            string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
-            using HttpClient client = new HttpClient();
-
-            // GitHub APIのリクエストヘッダーを設定
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("CSharpApp");
-
-            HttpResponseMessage response = await client.GetAsync(apiUrl);
-            response.EnsureSuccessStatusCode();
-
-            string json = await response.Content.ReadAsStringAsync();
-            using JsonDocument doc = JsonDocument.Parse(json);
-
-            JsonElement root = doc.RootElement;
-
-
-            if (root.TryGetProperty("tag_name", out JsonElement tagNameProperty))
+            try
             {
-                returns[0] = tagNameProperty.GetString();
-            }
+                string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
+                using HttpClient client = new HttpClient();
+
+                // GitHub APIのリクエストヘッダーを設定
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("CSharpApp");
+
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+                response.EnsureSuccessStatusCode();
+
+                string json = await response.Content.ReadAsStringAsync();
+                using JsonDocument doc = JsonDocument.Parse(json);
+
+                JsonElement root = doc.RootElement;
 
 
-
-            if (root.TryGetProperty("assets", out JsonElement assets))
-            {
-                foreach (JsonElement asset in assets.EnumerateArray())
+                if (root.TryGetProperty("tag_name", out JsonElement tagNameProperty))
                 {
-                    if (asset.TryGetProperty("name", out JsonElement nameProperty) &&
-                        nameProperty.GetString() == targetFileName)
+                    returns[0] = tagNameProperty.GetString();
+                }
+
+
+
+                if (root.TryGetProperty("assets", out JsonElement assets))
+                {
+                    foreach (JsonElement asset in assets.EnumerateArray())
                     {
-                        if (asset.TryGetProperty("browser_download_url", out JsonElement downloadUrlProperty))
+                        if (asset.TryGetProperty("name", out JsonElement nameProperty) &&
+                            nameProperty.GetString() == targetFileName)
                         {
-                            returns[1] = downloadUrlProperty.GetString();
+                            if (asset.TryGetProperty("browser_download_url", out JsonElement downloadUrlProperty))
+                            {
+                                returns[1] = downloadUrlProperty.GetString();
+                            }
                         }
                     }
                 }
-            }
-
+            }catch{}
             return returns;
+
         }
 
         private void aboutButton_Click(object sender, RoutedEventArgs e)
