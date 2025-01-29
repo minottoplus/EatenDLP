@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EatenDLP", "EatenDLP\EatenDLP.csproj", "{A1948CCF-32D6-4375-AB62-0DA7BEDFC457}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{58467300-8684-4798-A4FB-EF81BC0ABA6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A1948CCF-32D6-4375-AB62-0DA7BEDFC457}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1948CCF-32D6-4375-AB62-0DA7BEDFC457}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1948CCF-32D6-4375-AB62-0DA7BEDFC457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58467300-8684-4798-A4FB-EF81BC0ABA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58467300-8684-4798-A4FB-EF81BC0ABA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58467300-8684-4798-A4FB-EF81BC0ABA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58467300-8684-4798-A4FB-EF81BC0ABA6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -52,8 +52,6 @@ namespace EatenDLP
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
             string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
             string iniPath = Path.Combine(EatenDlpFolderPath, "settings.ini");
-            string downloadUrl = "https://github.com/yt-dlp/yt-dlp/releases/download/2024.10.22/yt-dlp.exe";
-            string ffmpegUrl = "https://media.githubusercontent.com/media/minottoplus/EatenDLP/refs/heads/master/EatenDLP/assets/ffmpeg.exe";
 
 
             LoadSettings(iniPath);
@@ -92,12 +90,6 @@ namespace EatenDLP
             Location_TextBox.IsEnabled = false;
             Browse_Button.IsEnabled = false;
             Download_Button.IsEnabled = false;
-
-
-            string URL = "";
-            int Quality = 0;
-            bool IsDefault = true;
-            string Location = "";
 
             if (File.Exists(settingsFilePath))
             {

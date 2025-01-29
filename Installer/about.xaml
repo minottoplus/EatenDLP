@@ -1,0 +1,35 @@
+﻿<Window x:Class="Installer.about"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Installer"
+
+        
+        
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:WindowHelper.SystemBackdropType="Mica"
+        ui:TitleBar.Height="36"
+        
+        
+        
+        mc:Ignorable="d"
+        Title="about"
+        Height="150" Width="300"
+        
+        ResizeMode="NoResize">
+    <Grid Margin="20,0,20,20">
+        <StackPanel Orientation="Horizontal">
+            <Image Source="/assets/installerIcon.png" Width="40" VerticalAlignment="Top" Margin="0,6,0,0"/>
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock FontFamily="segoe ui semibold" FontSize="20">Fluent Installer</TextBlock>
+                <TextBlock FontFamily="segoe ui" FontSize="13" Opacity="0.9">by minottoplus</TextBlock>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+            <Button Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="twitterButton" Click="twitterButton_Click">follow my twitter!</Button>
+        </StackPanel>
+    </Grid>
+</Window>

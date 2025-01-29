@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows10.0.18362.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>assets\installerIcon.ico</ApplicationIcon>
+    <PackageIcon>installerIcon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="assets\icon.ico" />
+    <None Remove="assets\icon.png" />
+    <None Remove="assets\installerIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\installerIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="iNKORE.UI.WPF" Version="1.2.8" />
+    <PackageReference Include="iNKORE.UI.WPF.Modern" Version="0.10.0" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="7.5.0" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Management" Version="7.5.0" />
+    <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.5.0" />
+    <PackageReference Include="Microsoft.PowerShell.ConsoleHost" Version="7.5.0" />
+    <PackageReference Include="Microsoft.WSMan.Management" Version="7.5.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\icon.ico" />
+    <Resource Include="assets\icon.png" />
+    <Resource Include="assets\iconTrim.png" />
+    <Resource Include="assets\installerIcon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="assets\iconTrim.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
