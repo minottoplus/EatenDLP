@@ -18,9 +18,9 @@
         
         
         mc:Ignorable="d"
-        Title="EatenDLP" Height="400" Width="450"
+        Title="EatenDLP" Height="480" Width="470"
         
-        MinHeight="400" MinWidth="450" >
+        MinHeight="480" MinWidth="470" >
 
 
 
@@ -88,6 +88,7 @@
                 <Grid Margin="0,0,0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="110"/>
+                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock FontFamily="segoe UI" VerticalAlignment="Center" FontSize="15" Grid.Column="0">Save Location</TextBlock>
@@ -110,10 +111,15 @@
 
             </StackPanel>
         </StackPanel>
+        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+            <ui:InfoBar x:Name="InfoBar" Title="Title" IsOpen="False" Severity="Success" Message="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage" Margin="-1,0,-1,10" HorizontalAlignment="Stretch"/>
+            <TextBlock x:Name="ProgressText" Margin="0,0,0,5" FontSize="10"></TextBlock>
+            <ui:ProgressBar Margin="0,0,0,10" x:Name="ProgressBar" Visibility="Collapsed" IsIndeterminate="False"/>
+            <Button HorizontalAlignment="Stretch" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click">
+                <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Download}" Content="Download"/>
+            </Button>
+        </StackPanel>
 
-        <Button Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click">
-            <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Download}" Content="Download"/>
-        </Button>
 
     </Grid>
     

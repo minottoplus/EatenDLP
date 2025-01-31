@@ -30,12 +30,13 @@ namespace EatenDLP
     {
 
 
+        private double _lastProgress = -1; // 前回の進捗率を保存する変数
 
 
         public MainWindow()
         {
             InitializeComponent();
-            
+
             Loaded += MainWindow_Loaded; // Loadedイベントハンドラを登録
                                          // ウィンドウが閉じられる際のイベントハンドラー
             this.Closing += MainWindow_Closing;
@@ -46,7 +47,7 @@ namespace EatenDLP
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-        //変数設定
+            //変数設定
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
@@ -229,7 +230,7 @@ namespace EatenDLP
 
         private void Quality_Changed(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
 
@@ -313,31 +314,134 @@ namespace EatenDLP
         {
             try
             {
-                string appDataPath = System.Environment.GetEnvironmentVariable("APPDATA");
-                string EatenDlpFolderPath = System.IO.Path.Combine(appDataPath, "EatenDLP");
-                string exePath = System.IO.Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
 
-
-
+                InfoBar.IsOpen = false;
+                string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
+                string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
+                string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
 
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
                     FileName = exePath,
-                    Arguments = command,
+                    Arguments = command + " --progress-template \"%(progress._percent_str)s\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
-                    CreateNoWindow = false
+                    CreateNoWindow = true
                 };
 
                 using (Process process = new Process { StartInfo = psi })
                 {
+                    bool first100 = false;
+                    bool error = false;
+                    string errorContent = "";
+                    process.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e) {
+                        if (e.Data != null)
+                        {
+                            if (e.Data.Contains("100") && first100 == false)
+                            {
+                                first100 = true;
+                            }
+                            else
+                            {
+                                Debug.WriteLine(e.Data);
+                                ProcessOutput(e.Data);
+                                Dispatcher.Invoke(() => {
+                                    ProgressText.Text = e.Data;
+                                });
+                            }
+                        }
+
+                    }; 
+                    process.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e) {
+                        if (e.Data != null)
+                        {
+                            Debug.WriteLine(e.Data);
+                            error = true;
+
+                            char[] separators = { '.', ';' };
+
+                            string[] parts = e.Data.Split(separators);
+
+                            if (parts.Length > 0)
+                            {
+                                errorContent = parts[0];
+                            }
+                        }
+
+                    };
+
+                    ProgressBar.Visibility = Visibility.Visible;
+                    ProgressText.Visibility = Visibility.Visible;
+
+                    ProgressBar.IsIndeterminate = true;
+
                     process.Start();
+                    process.BeginOutputReadLine();
+                    process.BeginErrorReadLine();
+
                     await Task.Run(() => process.WaitForExit());
+
+                    ProgressBar.Visibility = Visibility.Collapsed;
+                    ProgressText.Visibility = Visibility.Collapsed;
+
+
+                    if (error == true)
+                    {
+                        InfoBar.Title = "Failed";
+                        InfoBar.Message = errorContent;
+                        InfoBar.Severity = InfoBarSeverity.Error;
+                        InfoBar.IsOpen = true;
+                    }
+                    else
+                    {
+                        InfoBar.Title = "Success";
+                        InfoBar.Message = "Download complete!";
+                        InfoBar.Severity = InfoBarSeverity.Success;
+                        InfoBar.IsOpen = true;
+
+                    }
+
+
+                    _lastProgress = -1; // 進捗率をリセット
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception: {ex.Message}");
-                // 例外処理
+
+                InfoBar.Title = "Error";
+                InfoBar.Message = $"Download failed! Exception: {ex.Message}";
+                InfoBar.Severity = InfoBarSeverity.Error;
+                InfoBar.IsOpen = true;
+            }
+
+            Download_Button.IsEnabled = true;
+        }
+
+
+
+        private void ProcessOutput(string data)
+        {
+
+            if (string.IsNullOrEmpty(data)) return;
+
+            if (data.Contains("%"))
+            {
+                string percentText = data.Replace("%", "").Trim();
+                if (double.TryParse(percentText, out double percent))
+                {
+                    // 前回の進捗率より大きい場合のみ更新
+                    if (percent > _lastProgress)
+                    {
+                        _lastProgress = percent; // 進捗率を更新
+                        Dispatcher.Invoke(() =>
+                        {
+                            ProgressBar.Value = percent;
+                            ProgressBar.IsIndeterminate = false;
+                        });
+                    }
+                }
             }
         }
 
@@ -373,6 +477,7 @@ namespace EatenDLP
 
         private void Download_Button_Click(object sender, RoutedEventArgs e)
         {
+            Download_Button.IsEnabled = false;
             string url = URL_textBox.Text; // 例
             int quality = Quality_ComboBox.SelectedIndex;
 

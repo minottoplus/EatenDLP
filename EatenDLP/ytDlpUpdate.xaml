@@ -35,6 +35,6 @@
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
         <TextBlock FontSize="15" Grid.Row="1" Grid.Column="1" x:Name="title" Text="yt-dlpをアップデートしています...&#10;時間がかかる場合があります。" VerticalAlignment="Center"></TextBlock>
-        <ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" VerticalAlignment="Bottom" Grid.Row="2" Grid.Column="1" IsIndeterminate = "true"/>
+        <ui:ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" VerticalAlignment="Bottom" Grid.Row="2" Grid.Column="1" IsIndeterminate = "true"/>
     </Grid>
 </Window>
