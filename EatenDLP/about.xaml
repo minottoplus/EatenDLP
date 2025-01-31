@@ -34,7 +34,7 @@
                     <TextBlock FontSize="15" VerticalAlignment="Bottom" Margin="10,0,0,0" Padding="0,0,0,2.5">by minottoplus</TextBlock>
                 </StackPanel>
 
-                <TextBlock FontSize="10">version 1.0.0</TextBlock>
+                <TextBlock FontSize="10">version 1.0.2</TextBlock>
                 <TextBlock FontSize="10">Licensed under the MIT License</TextBlock>
             </StackPanel>
 
