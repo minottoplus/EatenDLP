@@ -290,6 +290,9 @@ namespace EatenDLP
 
 
             }
+
+            formatCode = formatCode + " --no-mtime";
+
             command += " " + formatCode;
 
             // 出力オプション

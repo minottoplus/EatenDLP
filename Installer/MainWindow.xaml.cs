@@ -185,7 +185,6 @@ namespace Installer
 
 
 
-
         // ショートカット作成 (IWshRuntimeLibrary を使わない方法)
         public static void CreateShortcut(string targetPath, string shortcutPath)
         {
