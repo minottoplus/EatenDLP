@@ -1,5 +1,3 @@
-# INSTALL FROM [INSTALLER](https://github.com/minottoplus/EatenDLP/releases/download/installer/Installer.exe)!!
-
 ![header](https://github.com/user-attachments/assets/29188617-4034-45d9-b17a-6f336a7fe676)
 
 <h1 align="center"> EatenDLP </h1>
