@@ -15,11 +15,12 @@ using System.Windows.Shapes;
 using iNKORE.UI.WPF.Modern;
 using iNKORE.UI.WPF.Modern.Controls;
 using System.Configuration;
-
+using IWshRuntimeLibrary;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Path = System.IO.Path;
 using System.Security.Claims;
+using File = System.IO.File;
 
 namespace EatenDLP
 {
@@ -47,6 +48,29 @@ namespace EatenDLP
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            string executionPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            string directoryPath = Path.GetDirectoryName(executionPath);
+            string oldPath = Path.Combine(directoryPath, "EatenDLP.exe");
+            string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "EatenDLP.lnk");
+            if (executionPath.Contains("tmp"))
+            {
+                try
+                {
+                    File.Delete(oldPath);
+                    RenameAndExecuteFile(executionPath, oldPath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"エラー: {ex.Message}");
+                }
+            }
+
+
+
+
+            CreateShortcut(executionPath, shortcutPath);
+
+
             //変数設定
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
@@ -76,12 +100,75 @@ namespace EatenDLP
 
 
             }
+            if (File.Exists(shortcutPath))
+            {
+                // exePath が存在する場合の処理
+                Console.WriteLine("ショートカット は存在します");
+            }
+            else
+            {
+
+
+                CreateShortcut(executionPath, shortcutPath);
+
+
+            }
+        }
+
+
+        private void CreateShortcut(string targetPath, string shortcutPath)
+        {
+            try
+            {
+                // ターゲットパスが存在するか確認
+                if (!File.Exists(targetPath) && !Directory.Exists(targetPath))
+                {
+                    throw new FileNotFoundException($"Target path '{targetPath}' not found.");
+                }
+
+                // IWshRuntimeLibrary を使ってショートカットを作成
+                IWshShell shell = new WshShell();
+                IWshShortcut shortcut = shell.CreateShortcut(shortcutPath);
+
+                shortcut.TargetPath = targetPath;
+                shortcut.WorkingDirectory = Path.GetDirectoryName(targetPath);
+                shortcut.Save();
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show($"Error creating shortcut: {ex.Message}");
+            }
         }
 
 
 
+        public void RenameAndExecuteFile(string sourceFilePath, string destinationFilePath)
+        {
+            try
+            {
+                // バッチファイルを作成
+                string batchFilePath = Path.Combine(Path.GetTempPath(), "rename_and_execute.bat");
+                using (StreamWriter writer = new StreamWriter(batchFilePath))
+                {
+                    writer.WriteLine("timeout /t 1 > nul");
+                    writer.WriteLine($"ren \"{sourceFilePath}\" \"{Path.GetFileName(destinationFilePath)}\"");
+                    writer.WriteLine($"\"{destinationFilePath}\"");
+                }
 
+                // バッチファイルを実行
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = batchFilePath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"エラー: {ex.Message}");
+            }
+        }
 
 
 

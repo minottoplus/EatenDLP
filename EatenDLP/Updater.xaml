@@ -1,0 +1,39 @@
+﻿<Window x:Class="EatenDLP.Updater"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EatenDLP"
+        
+        
+        xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        ui:WindowHelper.SystemBackdropType="Mica"
+        ui:TitleBar.Height="0"
+        
+        
+        mc:Ignorable="d"
+        
+        Title="Downloading..." Height="95" Width="270"
+        
+        
+        ResizeMode="NoResize"
+        MouseLeftButtonDown="Window_MouseDown">
+    
+    
+    <Grid Margin="00" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock FontSize="15" Grid.Row="1" Grid.Column="1" x:Name="title" Text="ファイルをダウンロードしています...&#10;時間がかかる場合があります。" VerticalAlignment="Center"></TextBlock>
+        <ui:ProgressBar x:Name="ProgressBar" Minimum="0" Maximum="100" Value="0" VerticalAlignment="Bottom" Grid.Row="2" Grid.Column="1" IsIndeterminate = "true"/>
+    </Grid>
+</Window>

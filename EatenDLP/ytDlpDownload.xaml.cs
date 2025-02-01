@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
+using IWshRuntimeLibrary;
+using File = System.IO.File;
 
 namespace EatenDLP
 {
@@ -39,6 +41,7 @@ namespace EatenDLP
 
         private async void ytDlpDownloadWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
@@ -54,6 +57,7 @@ namespace EatenDLP
                 }
 
 
+
                 // ダウンロードを実行 (非同期)
                 await DownloadFileAsync(downloadUrl, exePath);
                 await DownloadFileAsync(ffmpegUrl, ffmpegPath);
@@ -61,6 +65,8 @@ namespace EatenDLP
 
                 // ダウンロード完了後にアップデートを実行 (非同期)
                 await UpdateYtDlpAsync(exePath);
+
+
 
 
                 MessageBox.Show("正常にダウンロードが完了しました。", "完了", MessageBoxButton.OK);
@@ -74,6 +80,13 @@ namespace EatenDLP
 
 
         }
+
+
+
+
+
+
+
 
         private async Task DownloadFileAsync(string url, string path)
         {
