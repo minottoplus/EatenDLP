@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -37,9 +38,9 @@ namespace EatenDLP
 
             string releaseTag = releaseInfo[0]; // tag name
             string downloadUrl = releaseInfo[1]; // ダウンロード URL
-            string executionPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            string executionPath = Environment.GetCommandLineArgs()[0];
             string directoryPath = System.IO.Path.GetDirectoryName(executionPath);
-            string exePath = Path.Combine(directoryPath, "EatenDLP.tmp"); // 保存先のパス
+            string tmpPath = Path.Combine(directoryPath, "EatenDLP.tmp"); // 保存先のパス
 
 
 
@@ -47,22 +48,58 @@ namespace EatenDLP
             // ファイルダウンロード
             using (WebClient client = new WebClient())
             {
-                await client.DownloadFileTaskAsync(new Uri(downloadUrl), exePath);
+                await client.DownloadFileTaskAsync(new Uri(downloadUrl), tmpPath);
             }
 
 
-            ProcessStartInfo psi = new ProcessStartInfo
-            {
-                FileName = exePath,
-                UseShellExecute = false,
-                CreateNoWindow = false
-            };
+            RenameAndExecuteFile(tmpPath, executionPath);
 
-            Process.Start(psi);
-
-            
-            this.Close();
         }
+
+
+
+
+
+
+        public void RenameAndExecuteFile(string sourceFilePath, string destinationFilePath)
+        {
+            try
+            {
+                // バッチファイルを作成
+                string batchFilePath = Path.Combine(Path.GetTempPath(), "rename_and_execute.bat");
+                using (StreamWriter writer = new StreamWriter(batchFilePath))
+                {
+                    writer.WriteLine($"taskkill /f /im EatenDLP.exe");
+
+                    writer.WriteLine("powershell -Command \"sleep -m 100\"");
+                    writer.WriteLine($"del \"{destinationFilePath}\"");
+                    writer.WriteLine($"ren \"{sourceFilePath}\" \"{Path.GetFileName(destinationFilePath)}\"");
+                    writer.WriteLine($"\"{destinationFilePath}\"");
+                    writer.WriteLine($"exit");
+                }
+
+                // バッチファイルを実行
+                var app = new ProcessStartInfo();
+                app.FileName = batchFilePath;
+                app.UseShellExecute = true;
+
+                Process.Start(app);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"エラー: {ex.Message}", "エラー", MessageBoxButton.OK);
+                Console.WriteLine($"エラー: {ex.Message}");
+            }
+        }
+
+
+
+
+
+
+
+
 
 
         static async Task<string[]> GetLatestReleaseAssetUrl(string owner, string repo, string targetFileName)

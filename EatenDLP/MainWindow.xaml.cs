@@ -48,27 +48,15 @@ namespace EatenDLP
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            string executionPath = System.Reflection.Assembly.GetEntryAssembly().Location;
+            string executionPath = Environment.GetCommandLineArgs()[0];
             string directoryPath = Path.GetDirectoryName(executionPath);
             string oldPath = Path.Combine(directoryPath, "EatenDLP.exe");
             string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "EatenDLP.lnk");
-            if (executionPath.Contains("tmp"))
-            {
-                try
-                {
-                    File.Delete(oldPath);
-                    RenameAndExecuteFile(executionPath, oldPath);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"エラー: {ex.Message}");
-                }
-            }
 
 
 
 
-            CreateShortcut(executionPath, shortcutPath);
+
 
 
             //変数設定
@@ -142,33 +130,7 @@ namespace EatenDLP
 
 
 
-        public void RenameAndExecuteFile(string sourceFilePath, string destinationFilePath)
-        {
-            try
-            {
-                // バッチファイルを作成
-                string batchFilePath = Path.Combine(Path.GetTempPath(), "rename_and_execute.bat");
-                using (StreamWriter writer = new StreamWriter(batchFilePath))
-                {
-                    writer.WriteLine("timeout /t 1 > nul");
-                    writer.WriteLine($"ren \"{sourceFilePath}\" \"{Path.GetFileName(destinationFilePath)}\"");
-                    writer.WriteLine($"\"{destinationFilePath}\"");
-                }
 
-                // バッチファイルを実行
-                ProcessStartInfo psi = new ProcessStartInfo
-                {
-                    FileName = batchFilePath,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"エラー: {ex.Message}");
-            }
-        }
 
 
 

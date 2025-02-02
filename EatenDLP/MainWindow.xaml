@@ -115,7 +115,7 @@
             <ui:InfoBar x:Name="InfoBar" Title="Title" IsOpen="False" Severity="Success" Message="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage" Margin="-1,0,-1,10" HorizontalAlignment="Stretch"/>
             <TextBlock x:Name="ProgressText" Margin="0,0,0,5" FontSize="10"></TextBlock>
             <ui:ProgressBar Margin="0,0,0,10" x:Name="ProgressBar" Visibility="Collapsed" IsIndeterminate="False"/>
-            <Button HorizontalAlignment="Stretch" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click">
+            <Button HorizontalAlignment="Stretch" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click" IsEnabled="False">
                 <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Download}" Content="Download"/>
             </Button>
         </StackPanel>
