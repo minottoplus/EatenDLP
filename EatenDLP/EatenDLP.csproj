@@ -9,6 +9,12 @@
     <ApplicationIcon>assets\icon.ico</ApplicationIcon>
     <PackageIcon>icon.png</PackageIcon>
     <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
+
+	  <Version>1.0.4</Version>
+
+	  <FileVersion></FileVersion>
+
+	  <AssemblyVersion></AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

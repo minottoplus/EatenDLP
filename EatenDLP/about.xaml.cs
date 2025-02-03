@@ -35,7 +35,17 @@ namespace EatenDLP
         public about()
         {
             InitializeComponent();
+            Loaded += about_Loaded;
         }
+
+
+        private void about_Loaded(object sender, RoutedEventArgs e)
+        {
+            versionText.Text = $"Version: {GlobalData.Version}";
+        }
+
+
+
 
         private void DlpUpdate_Click(object sender, RoutedEventArgs e)
         {

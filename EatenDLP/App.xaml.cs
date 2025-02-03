@@ -13,4 +13,12 @@ namespace EatenDLP
 
     }
 
+
+    public static class GlobalData
+    {
+        public static string Version { get; set; }
+        public static string latestVersion { get; set; }
+
+    }
+
 }

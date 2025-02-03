@@ -21,6 +21,9 @@ using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Path = System.IO.Path;
 using System.Security.Claims;
 using File = System.IO.File;
+using System.Text.Json;
+using System.Net.Http;
+using System.Runtime.InteropServices;
 
 namespace EatenDLP
 {
@@ -46,31 +49,38 @@ namespace EatenDLP
 
 
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            GlobalData.Version = "1.0.3";
+            GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
+
             string executionPath = Environment.GetCommandLineArgs()[0];
             string directoryPath = Path.GetDirectoryName(executionPath);
             string oldPath = Path.Combine(directoryPath, "EatenDLP.exe");
             string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "EatenDLP.lnk");
 
-
-
-
-
-
-
-            //変数設定
+            // 変数設定
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
             string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
             string iniPath = Path.Combine(EatenDlpFolderPath, "settings.ini");
 
-
             LoadSettings(iniPath);
 
+            if (long.Parse(GlobalData.Version.Replace(".", "")) < long.Parse(GlobalData.latestVersion.Replace(".", "")))
+            {
+                InfoBar.Title = "Update Available";
+                InfoBar.Message = $"Please update in about window";
+                InfoBar.Severity = InfoBarSeverity.Informational;
+                InfoBar.IsOpen = true;
+            }
 
-            //exePathが存在するか
+
+            GetEatenDlpFolderPath();
+
+
+            // exePathが存在するか
             if (File.Exists(exePath) && File.Exists(ffmpegPath))
             {
                 // exePath が存在する場合の処理
@@ -78,16 +88,15 @@ namespace EatenDLP
             }
             else
             {
-                //exePathが存在しない場合の処理
+                // exePathが存在しない場合の処理
                 MessageBox.Show("必須ファイルが見つかりません。ダウンロードを行います。",
                     "エラー",
                     MessageBoxButton.OK);
 
                 ytDlpDownload DlpDownload = new ytDlpDownload();
                 DlpDownload.ShowDialog();
-
-
             }
+
             if (File.Exists(shortcutPath))
             {
                 // exePath が存在する場合の処理
@@ -95,11 +104,7 @@ namespace EatenDLP
             }
             else
             {
-
-
                 CreateShortcut(executionPath, shortcutPath);
-
-
             }
         }
 
@@ -130,7 +135,39 @@ namespace EatenDLP
 
 
 
+        static async Task<string> GetLatestReleaseTagName(string owner, string repo)
+        {
+            string tagName = "";
+            try
+            {
+                string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
+                using HttpClient client = new HttpClient();
 
+                // GitHub APIのリクエストヘッダーを設定
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("CSharpApp");
+
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+                response.EnsureSuccessStatusCode();
+
+                string json = await response.Content.ReadAsStringAsync();
+                using JsonDocument doc = JsonDocument.Parse(json);
+
+                JsonElement root = doc.RootElement;
+
+                if (root.TryGetProperty("tag_name", out JsonElement tagNameProperty))
+                {
+                    tagName = tagNameProperty.GetString();
+                }
+            }
+            catch (Exception ex)
+            {
+                // エラー処理を追加 (例: ロギング)
+                Console.WriteLine($"Error getting tag name: {ex.Message}");
+                // 必要に応じて、例外を再スローすることも検討
+                // throw;
+            }
+            return tagName;
+        }
 
 
 
@@ -296,6 +333,17 @@ namespace EatenDLP
             {
                 Download_Button.IsEnabled = false;
             }
+
+            if (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != ""))
+            {
+                Open_Button.IsEnabled = true;
+            }
+            else
+            {
+                Open_Button.IsEnabled = false;
+            }
+
+
         }
 
 
@@ -562,5 +610,32 @@ namespace EatenDLP
                 Location_TextBox.Text = selectedFolderPath;
             }
         }
+
+
+        private void Open_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            string EatenDLPPath = GetEatenDlpFolderPath(); // 例
+            if (Default_RadioButton.IsChecked == true)
+            {
+                ShellExecute(IntPtr.Zero, "open", EatenDLPPath, null, null, 1);
+            }
+            else
+            {
+                ShellExecute(IntPtr.Zero, "open", Location_TextBox.Text, null, null, 1);
+            }
+
+        }
+
+
+
+
+
+        [DllImport("shell32.dll")]
+        private static extern int ShellExecute(IntPtr hWnd, string lpOperation, string lpFile, string lpParameters, string lpDirectory, int nShowCmd);
     }
+
+
 }
+
+
