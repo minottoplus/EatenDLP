@@ -127,11 +127,11 @@
         </StackPanel>
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
 
-            <!--<re:ReCaptcha x:Name="ReCaptchaControl" HorizontalAlignment="Left" Margin="0,0,0,5" IsChecked="False" VerificationRequested="ReCaptchaControl_VerificationRequested">
+            <re:ReCaptcha x:Name="ReCaptchaControl" HorizontalAlignment="Left" Margin="0,0,0,5" IsChecked="False" VerificationRequested="ReCaptchaControl_VerificationRequested" Visibility="Collapsed">
                 <re:ReCaptcha.Theme>
                     <themes:DarkTheme />
                 </re:ReCaptcha.Theme>
-            </re:ReCaptcha>-->
+            </re:ReCaptcha>
             <ui:InfoBar x:Name="InfoBar" Title="Title" IsOpen="False" Severity="Success" Message="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage" Margin="-1,0,-1,10" HorizontalAlignment="Stretch"/>
             <TextBlock x:Name="ProgressText" Margin="0,0,0,5" FontSize="10" Visibility="Collapsed"></TextBlock>
             <ui:ProgressBar Margin="0,0,0,10" x:Name="ProgressBar" Visibility="Collapsed" IsIndeterminate="False"/>
