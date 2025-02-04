@@ -1,9 +1,6 @@
 ﻿using iNKORE.UI.WPF.Modern.Controls;
 using IWshRuntimeLibrary;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using ReCaptcha.Desktop.WPF.Client.Interfaces;
-using ReCaptcha.Desktop.WPF.Client;
-using ReCaptcha.Desktop.WPF.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -42,7 +39,7 @@ namespace EatenDLP
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
 
 
 
