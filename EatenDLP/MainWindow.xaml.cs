@@ -14,10 +14,6 @@ using System.Windows.Controls;
 using File = System.IO.File;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Path = System.IO.Path;
-using ReCaptcha.Desktop.WPF.UI;
-using ReCaptcha.Desktop.WPF.Client;
-using ReCaptcha.Desktop.WPF.Client.Interfaces;
-using ReCaptcha.Desktop.WPF.Configuration;
 
 namespace EatenDLP
 {
@@ -323,20 +319,12 @@ namespace EatenDLP
         private void Download_Button_Enable()
         {
 
-            if(ReCaptchaControl.IsChecked == true)
+            if (URL_textBox.Text != "" && (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != "")))
             {
-                if (URL_textBox.Text != "" && (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != "")))
-                {
-                    Download_Button.IsEnabled = true;
-                }
-                else
-                {
-                    Download_Button.IsEnabled = false;
-                }
+                Download_Button.IsEnabled = true;
             }
             else
             {
-
                 Download_Button.IsEnabled = false;
             }
 
@@ -647,13 +635,6 @@ namespace EatenDLP
         private static extern int ShellExecute(IntPtr hWnd, string lpOperation, string lpFile, string lpParameters, string lpDirectory, int nShowCmd);
 
 
-        private async void ReCaptchaControl_VerificationRequested(object sender, EventArgs e)
-        {
-            Download_Button_Enable();
-            await Task.Delay(180);
-            ReCaptchaControl.IsChecked = false;
-            Download_Button_Enable();
-        }
     }
 
 
