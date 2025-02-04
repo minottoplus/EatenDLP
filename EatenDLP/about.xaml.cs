@@ -1,29 +1,9 @@
-﻿using iNKORE.UI.WPF.Modern.Controls;
-using System;
-using System.Collections.Generic;
+﻿using IWshRuntimeLibrary;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Policy;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Net.Http;
-using System.Text.Json;
-using Path = System.IO.Path;
-using System.Reflection;
-using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
-using IWshRuntimeLibrary;
 using File = System.IO.File;
+using Path = System.IO.Path;
 
 namespace EatenDLP
 {

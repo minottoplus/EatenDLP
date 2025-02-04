@@ -1,29 +1,23 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using iNKORE.UI.WPF.Modern;
-using iNKORE.UI.WPF.Modern.Controls;
-using System.Configuration;
+﻿using iNKORE.UI.WPF.Modern.Controls;
 using IWshRuntimeLibrary;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
-using Path = System.IO.Path;
-using System.Security.Claims;
-using File = System.IO.File;
-using System.Text.Json;
+using ReCaptcha.Desktop.WPF.Client.Interfaces;
+using ReCaptcha.Desktop.WPF.Client;
+using ReCaptcha.Desktop.WPF.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Windows;
+using System.Windows.Controls;
+using File = System.IO.File;
+using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
+using Path = System.IO.Path;
+using ReCaptcha.Desktop.WPF.UI;
+using ReCaptcha.Desktop.WPF.Client;
+using ReCaptcha.Desktop.WPF.Client.Interfaces;
+using ReCaptcha.Desktop.WPF.Configuration;
 
 namespace EatenDLP
 {
@@ -33,6 +27,7 @@ namespace EatenDLP
     public partial class MainWindow : Window
     {
 
+        private const string SecretKey = "6LcdfMwqAAAAAIX5XzLblEeq_SnH2OrzOpRrxgmx"; // シークレットキーを設定
 
         private double _lastProgress = -1; // 前回の進捗率を保存する変数
 
@@ -45,12 +40,16 @@ namespace EatenDLP
                                          // ウィンドウが閉じられる際のイベントハンドラー
             this.Closing += MainWindow_Closing;
 
-        }
 
+        }
 
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            
+
+
+
             GlobalData.Version = "1.0.4";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
 
@@ -323,14 +322,27 @@ namespace EatenDLP
 
         private void Download_Button_Enable()
         {
-            if (URL_textBox.Text != "" && (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != "")))
+
+            if(ReCaptchaControl.IsChecked == true)
             {
-                Download_Button.IsEnabled = true;
+                if (URL_textBox.Text != "" && (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != "")))
+                {
+                    Download_Button.IsEnabled = true;
+                }
+                else
+                {
+                    Download_Button.IsEnabled = false;
+                }
             }
             else
             {
+
                 Download_Button.IsEnabled = false;
             }
+
+
+
+
 
             if (Default_RadioButton.IsChecked == true || (Default_RadioButton.IsChecked == false && Location_TextBox.Text != ""))
             {
@@ -430,7 +442,8 @@ namespace EatenDLP
                     bool first100 = false;
                     bool error = false;
                     string errorContent = "";
-                    process.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e) {
+                    process.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
+                    {
                         if (e.Data != null)
                         {
                             if (e.Data.Contains("100") && first100 == false)
@@ -441,14 +454,16 @@ namespace EatenDLP
                             {
                                 Debug.WriteLine(e.Data);
                                 ProcessOutput(e.Data);
-                                Dispatcher.Invoke(() => {
+                                Dispatcher.Invoke(() =>
+                                {
                                     ProgressText.Text = e.Data;
                                 });
                             }
                         }
 
-                    }; 
-                    process.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e) {
+                    };
+                    process.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
+                    {
                         if (e.Data != null)
                         {
                             Debug.WriteLine(e.Data);
@@ -627,8 +642,18 @@ namespace EatenDLP
 
 
 
+
         [DllImport("shell32.dll")]
         private static extern int ShellExecute(IntPtr hWnd, string lpOperation, string lpFile, string lpParameters, string lpDirectory, int nShowCmd);
+
+
+        private async void ReCaptchaControl_VerificationRequested(object sender, EventArgs e)
+        {
+            Download_Button_Enable();
+            await Task.Delay(180);
+            ReCaptchaControl.IsChecked = false;
+            Download_Button_Enable();
+        }
     }
 
 

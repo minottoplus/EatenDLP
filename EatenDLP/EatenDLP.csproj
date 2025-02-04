@@ -43,9 +43,9 @@
 
   <ItemGroup>
     <PackageReference Include="iNKORE.UI.WPF.Modern" Version="0.10.0" />
+    <PackageReference Include="ReCaptcha.Desktop.WPF" Version="2.1.0" />
     <PackageReference Include="System.Management" Version="9.0.1" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
-    <PackageReference Include="WPF-UI" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>

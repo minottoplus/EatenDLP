@@ -7,6 +7,8 @@
         Style="{DynamicResource DefaultWindowStyle}"
 
         
+        xmlns:re="clr-namespace:ReCaptcha.Desktop.WPF.UI;assembly=ReCaptcha.Desktop.WPF"
+        xmlns:themes="clr-namespace:ReCaptcha.Desktop.WPF.UI.Themes;assembly=ReCaptcha.Desktop.WPF"
         
         xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
         ui:WindowHelper.UseModernWindowStyle="True"
@@ -18,9 +20,9 @@
         
         
         mc:Ignorable="d"
-        Title="EatenDLP" Height="480" Width="470"
+        Title="EatenDLP" Height="550" Width="470"
         
-        MinHeight="480" MinWidth="470" >
+        MinHeight="550" MinWidth="470" >
 
 
 
@@ -124,6 +126,12 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
+
+            <re:ReCaptcha x:Name="ReCaptchaControl" HorizontalAlignment="Left" Margin="0,0,0,5" IsChecked="False" VerificationRequested="ReCaptchaControl_VerificationRequested">
+                <re:ReCaptcha.Theme>
+                    <themes:DarkTheme />
+                </re:ReCaptcha.Theme>
+            </re:ReCaptcha>
             <ui:InfoBar x:Name="InfoBar" Title="Title" IsOpen="False" Severity="Success" Message="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage" Margin="-1,0,-1,10" HorizontalAlignment="Stretch"/>
             <TextBlock x:Name="ProgressText" Margin="0,0,0,5" FontSize="10" Visibility="Collapsed"></TextBlock>
             <ui:ProgressBar Margin="0,0,0,10" x:Name="ProgressBar" Visibility="Collapsed" IsIndeterminate="False"/>

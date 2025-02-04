@@ -11,6 +11,7 @@
                 <!--<ResourceDictionary Source="pack://application:,,,/PresentationFramework.Fluent;component/Themes/Fluent.xaml" />-->
                 <ui:ThemeResources/>
                 <ui:XamlControlsResources/>
+                <ui:CommonDictionary xmlns:ui="clr-namespace:ReCaptcha.Desktop.WPF.UI;assembly=ReCaptcha.Desktop.WPF" />
 
             </ResourceDictionary.MergedDictionaries>
 
