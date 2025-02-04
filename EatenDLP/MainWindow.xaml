@@ -127,7 +127,7 @@
         </StackPanel>
         <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Stretch">
 
-            <re:ReCaptcha x:Name="ReCaptchaControl" HorizontalAlignment="Left" Margin="0,0,0,5" IsChecked="False" VerificationRequested="ReCaptchaControl_VerificationRequested" Visibility="Collapsed">
+            <re:ReCaptcha x:Name="ReCaptchaControl" HorizontalAlignment="Left" Margin="0,0,0,5" IsChecked="True" VerificationRequested="ReCaptchaControl_VerificationRequested" Visibility="Collapsed">
                 <re:ReCaptcha.Theme>
                     <themes:DarkTheme />
                 </re:ReCaptcha.Theme>
