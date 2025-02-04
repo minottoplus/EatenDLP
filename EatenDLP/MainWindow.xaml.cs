@@ -51,7 +51,7 @@ namespace EatenDLP
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            GlobalData.Version = "1.0.3.1";
+            GlobalData.Version = "1.0.4";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
 
             string executionPath = Environment.GetCommandLineArgs()[0];
