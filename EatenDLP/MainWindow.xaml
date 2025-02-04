@@ -45,7 +45,7 @@
                 </StackPanel>
                 <TextBlock FontSize="12">yt-dlp based gui downloader</TextBlock>
             </StackPanel>
-            <Button ToolTip="Save my documents" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="49" Click="Info_Click">
+            <Button Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="49" Click="Info_Click">
                 <Grid Width="Auto" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                     
@@ -104,7 +104,7 @@
                             <RadioButton GroupName="location" x:Name="Custom_RadioButton" Margin="20,0,0,0" Unchecked="Custom_Unchecked">Custom</RadioButton>
                         </StackPanel>
                         <Button x:Name="Open_Button" Click="Open_Button_Click" IsEnabled="True" Margin="5,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Stretch">
-                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Go}" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <ui:FontIcon Icon="{x:Static ui:SegoeFluentIcons.Go}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
 

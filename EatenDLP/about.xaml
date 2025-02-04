@@ -40,12 +40,12 @@
 
 
 
-            <Grid VerticalAlignment="Bottom" Grid.Row="1">
+            <Grid VerticalAlignment="Bottom" Grid.Row="1" Height="35">
                 <StackPanel Orientation="Horizontal">
-                    <Button Grid.Row="1" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" Click="Update_Click">
+                    <Button Grid.Row="1" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" Click="Update_Click" VerticalAlignment="Stretch">
                         <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Go}" Content="See Github"/>
                     </Button>
-                    <Button Grid.Row="1" Click="Update_Click" Margin="10,0,0,0">
+                    <Button Grid.Row="1" Click="Update_Click" Margin="10,0,0,0" VerticalAlignment="Stretch">
                         <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Sync}" Content="Update EatenDLP"/>
                     </Button>
 

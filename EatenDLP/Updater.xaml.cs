@@ -88,7 +88,7 @@ namespace EatenDLP
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"エラー: {ex.Message}", "エラー", MessageBoxButton.OK);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK);
                 Console.WriteLine($"エラー: {ex.Message}");
             }
         }

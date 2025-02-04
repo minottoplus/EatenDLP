@@ -51,7 +51,7 @@ namespace EatenDLP
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            GlobalData.Version = "1.0.3";
+            GlobalData.Version = "1.0.3.1";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
 
             string executionPath = Environment.GetCommandLineArgs()[0];
@@ -84,12 +84,11 @@ namespace EatenDLP
             if (File.Exists(exePath) && File.Exists(ffmpegPath))
             {
                 // exePath が存在する場合の処理
-                Console.WriteLine($"yt-dlp.exe は存在します: {exePath}");
             }
             else
             {
                 // exePathが存在しない場合の処理
-                MessageBox.Show("必須ファイルが見つかりません。ダウンロードを行います。",
+                MessageBox.Show("Required file is missing.",
                     "エラー",
                     MessageBoxButton.OK);
 
@@ -100,7 +99,6 @@ namespace EatenDLP
             if (File.Exists(shortcutPath))
             {
                 // exePath が存在する場合の処理
-                Console.WriteLine("ショートカット は存在します");
             }
             else
             {
@@ -555,11 +553,9 @@ namespace EatenDLP
             if (!Directory.Exists(eatenDlpFolderPath))
             {
                 Directory.CreateDirectory(eatenDlpFolderPath);
-                Console.WriteLine("EatenDLPフォルダを作成しました: " + eatenDlpFolderPath); //デバッグ用
             }
             else
             {
-                Console.WriteLine("EatenDLPフォルダは既に存在します: " + eatenDlpFolderPath); //デバッグ用
             }
 
             return eatenDlpFolderPath;
@@ -602,7 +598,7 @@ namespace EatenDLP
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true; // フォルダ選択モードにする
-            dialog.Title = "フォルダを選択してください";
+            dialog.Title = "Pick a folder";
 
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {

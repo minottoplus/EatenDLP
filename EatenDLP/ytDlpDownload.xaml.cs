@@ -69,12 +69,12 @@ namespace EatenDLP
 
 
 
-                MessageBox.Show("正常にダウンロードが完了しました。", "完了", MessageBoxButton.OK);
+                MessageBox.Show("Download complete successfully.", "Complete", MessageBoxButton.OK);
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"エラーが発生しました: {ex.Message}", "エラー", MessageBoxButton.OK);
+                MessageBox.Show($"An error has occurred: {ex.Message}", "Error", MessageBoxButton.OK);
             }
 
 
