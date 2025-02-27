@@ -40,7 +40,7 @@
             <StackPanel Grid.Row="0">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock FontFamily="segoe UI Bold" FontSize="25">EatenDLP</TextBlock>
-                    <TextBlock FontFamily="segoe UI Italic" FontSize="15" Margin="10,0" Opacity="0.7" VerticalAlignment="Bottom">Until cooking version (by minotto)</TextBlock>
+                    <TextBlock FontFamily="segoe UI Italic" FontSize="15" Margin="10,0" Opacity="0.7" VerticalAlignment="Bottom">Still cooking version (by minotto)</TextBlock>
                 </StackPanel>
                 <TextBlock FontSize="12">yt-dlp based gui downloader</TextBlock>
             </StackPanel>

@@ -20,8 +20,6 @@ namespace EatenDLP
     public partial class MainWindow : Window
     {
 
-        private const string SecretKey = "6LcdfMwqAAAAAIX5XzLblEeq_SnH2OrzOpRrxgmx"; // シークレットキーを設定
-
         private double _lastProgress = -1; // 前回の進捗率を保存する変数
 
 
@@ -43,7 +41,7 @@ namespace EatenDLP
 
 
 
-            GlobalData.Version = "1.0.4";
+            GlobalData.Version = "1.0.5";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
 
             string executionPath = Environment.GetCommandLineArgs()[0];
@@ -81,7 +79,7 @@ namespace EatenDLP
             {
                 // exePathが存在しない場合の処理
                 MessageBox.Show("Required file is missing.",
-                    "エラー",
+                    "Error",
                     MessageBoxButton.OK);
 
                 ytDlpDownload DlpDownload = new ytDlpDownload();
