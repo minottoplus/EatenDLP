@@ -94,6 +94,28 @@ namespace EatenDLP
             {
                 CreateShortcut(executionPath, shortcutPath);
             }
+
+
+
+
+
+            bool isRestartedForUpdate = Environment.GetCommandLineArgs().Contains("--restarted-for-update");
+            if (isRestartedForUpdate)
+            {
+                // アップデート後の処理
+                Updater UpdateWin = new Updater();
+                UpdateWin.ShowDialog();
+            }
+
+
+
+
+
+
+
+
+
+
         }
 
 
