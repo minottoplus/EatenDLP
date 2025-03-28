@@ -519,6 +519,9 @@ namespace EatenDLP
 
 
                     _lastProgress = -1; // 進捗率をリセット
+
+
+
                 }
             }
             catch (Exception ex)
@@ -532,6 +535,9 @@ namespace EatenDLP
             }
 
             Download_Button.IsEnabled = true;
+
+
+            KillProcess("yt-dlp");
         }
 
 
@@ -612,7 +618,38 @@ namespace EatenDLP
             Console.WriteLine(ytDlpCommand);
 
             ExecuteCommand(ytDlpCommand);
+
         }
+
+
+
+
+        private void KillProcess(string processName)
+        {
+            Process[] processes = Process.GetProcessesByName(processName);
+
+            if (processes.Length == 0)
+            {
+                return;
+            }
+
+            foreach (Process process in processes)
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+        }
+
+
+
+
+
+
 
         private void Browse_Button_Click(object sender, RoutedEventArgs e)
         {
