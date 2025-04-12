@@ -41,8 +41,13 @@ namespace EatenDLP
 
 
 
-            GlobalData.Version = "1.0.5";
+            GlobalData.Version = "1.0.7";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
+
+            InfoBar.Title = "未来人？";
+            InfoBar.Message = "あなたは現行バージョンより新しいEatenDLPを実行しています！";
+            InfoBar.Severity = InfoBarSeverity.Informational;
+            InfoBar.IsOpen = true;
 
             string executionPath = Environment.GetCommandLineArgs()[0];
             string directoryPath = Path.GetDirectoryName(executionPath);
@@ -296,6 +301,9 @@ namespace EatenDLP
         private void URL_Changed(object sender, RoutedEventArgs e)
         {
             Download_Button_Enable();
+            if (URL_textBox.Text.Contains("soundcloud")){
+                Quality_ComboBox.SelectedIndex = 2;
+            }
         }
 
 
@@ -501,27 +509,35 @@ namespace EatenDLP
                     ProgressText.Visibility = Visibility.Collapsed;
 
 
-                    if (error == true)
+
+                    if (error == true && !errorContent.Contains("WARNING"))
                     {
                         InfoBar.Title = "Failed";
                         InfoBar.Message = errorContent;
                         InfoBar.Severity = InfoBarSeverity.Error;
                         InfoBar.IsOpen = true;
                     }
-                    else
+                    else if (process.ExitCode == 0 || errorContent.Contains("WARNING"))
                     {
                         InfoBar.Title = "Success";
                         InfoBar.Message = "Download complete!";
                         InfoBar.Severity = InfoBarSeverity.Success;
                         InfoBar.IsOpen = true;
-
                     }
+                    else
+                    {
+                        //InfoBar.Title = "Failed";
+                        //InfoBar.Message = "Download failed.";
+                        //InfoBar.Severity = InfoBarSeverity.Error;
+                        //InfoBar.IsOpen = true;
+                    }
+
 
 
                     _lastProgress = -1; // 進捗率をリセット
 
-
-
+                    Cancel_Button.Visibility = Visibility.Collapsed;
+                    Download_Button.Visibility = Visibility.Visible;
                 }
             }
             catch (Exception ex)
@@ -596,7 +612,9 @@ namespace EatenDLP
 
         private void Download_Button_Click(object sender, RoutedEventArgs e)
         {
-            Download_Button.IsEnabled = false;
+            //Download_Button.IsEnabled = false;
+            Download_Button.Visibility = Visibility.Collapsed;
+            Cancel_Button.Visibility = Visibility.Visible;
             string url = URL_textBox.Text; // 例
             int quality = Quality_ComboBox.SelectedIndex;
 
@@ -619,6 +637,60 @@ namespace EatenDLP
 
             ExecuteCommand(ytDlpCommand);
 
+        }
+
+
+        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
+        {
+            // yt-dlpプロセスを終了
+            KillProcess("yt-dlp");
+            KillProcess("ffmpeg");
+
+            // プログレスバーとテキストを非表示にする
+            ProgressBar.Visibility = Visibility.Collapsed;
+            ProgressText.Visibility = Visibility.Collapsed;
+
+            // キャンセルボタンを非表示にし、ダウンロードボタンを再表示する
+            Cancel_Button.Visibility = Visibility.Collapsed;
+            Download_Button.Visibility = Visibility.Visible;
+
+            Task.Delay(100);
+
+            // 一時ファイルを削除
+            string outputPath = ""; // 例
+
+
+            if (Default_RadioButton.IsChecked == true)
+            {
+                outputPath = GetEatenDlpFolderPath(); // 例
+
+            }
+            else
+            {
+
+                outputPath = Location_TextBox.Text; // 例
+            }
+
+            foreach (var file in Directory.GetFiles(outputPath))
+            {
+                if (Path.GetExtension(file).Contains("part"))
+                {
+                    try
+                    {
+                        File.Delete(file);
+                        Debug.WriteLine($"tried to delete file: {file}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error deleting file: {ex.Message}");
+                    }
+                }
+            }
+            // 情報バーにキャンセルメッセージを表示
+            InfoBar.Title = "Cancelled";
+            InfoBar.Message = "Download has been cancelled.";
+            InfoBar.Severity = InfoBarSeverity.Warning;
+            InfoBar.IsOpen = true;
         }
 
 

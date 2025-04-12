@@ -128,8 +128,11 @@
             <ui:InfoBar x:Name="InfoBar" Title="Title" IsOpen="False" Severity="Success" Message="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage" Margin="-1,0,-1,10" HorizontalAlignment="Stretch"/>
             <TextBlock x:Name="ProgressText" Margin="0,0,0,5" FontSize="10" Visibility="Collapsed"></TextBlock>
             <ui:ProgressBar Margin="0,0,0,10" x:Name="ProgressBar" Visibility="Collapsed" IsIndeterminate="False"/>
-            <Button HorizontalAlignment="Stretch" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click" IsEnabled="False">
-                <ui:IconAndText Icon="{x:Static ui:SegoeFluentIcons.Download}" Content="Download"/>
+            <Button HorizontalAlignment="Stretch" Height="50" Style="{StaticResource {x:Static ui:ThemeKeys.AccentButtonStyleKey}}" x:Name="Download_Button" Click="Download_Button_Click" IsEnabled="False" Visibility="Visible">
+                <ui:IconAndText x:Name="downloadText" Icon="{x:Static ui:SegoeFluentIcons.Download}" Content="Download"/>
+            </Button>
+            <Button HorizontalAlignment="Stretch" Height="50" x:Name="Cancel_Button" Click="Cancel_Button_Click" IsEnabled="True" Visibility="Collapsed">
+                <ui:IconAndText x:Name="cancelText" Icon="{x:Static ui:SegoeFluentIcons.Cancel}" Content="Cancel"/>
             </Button>
         </StackPanel>
 
