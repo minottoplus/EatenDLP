@@ -41,28 +41,37 @@ namespace EatenDLP
 
 
 
-            GlobalData.Version = "1.0.7";
+            GlobalData.Version = "1.0.8";
             GlobalData.latestVersion = await GetLatestReleaseTagName("minottoplus", "EatenDLP");
 
-            InfoBar.Title = "未来人？";
-            InfoBar.Message = "あなたは現行バージョンより新しいEatenDLPを実行しています！";
-            InfoBar.Severity = InfoBarSeverity.Informational;
-            InfoBar.IsOpen = true;
 
+           
+            //未来人表記
+            if (long.Parse(GlobalData.Version.Replace(".", "")) > long.Parse(GlobalData.latestVersion.Replace(".", "")))
+            {
+                InfoBar.Title = "未来人？";
+                InfoBar.Message = "あなたは現行バージョンより新しいEatenDLPを実行しています！";
+                InfoBar.Severity = InfoBarSeverity.Informational;
+                InfoBar.IsOpen = true;
+            }
+
+
+
+            // 変数設定
             string executionPath = Environment.GetCommandLineArgs()[0];
             string directoryPath = Path.GetDirectoryName(executionPath);
             string oldPath = Path.Combine(directoryPath, "EatenDLP.exe");
             string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs", "EatenDLP.lnk");
 
-            // 変数設定
             string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
             string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
             string exePath = Path.Combine(EatenDlpFolderPath, "yt-dlp.exe");
             string ffmpegPath = Path.Combine(EatenDlpFolderPath, "ffmpeg.exe");
             string iniPath = Path.Combine(EatenDlpFolderPath, "settings.ini");
 
-            LoadSettings(iniPath);
 
+            //設定のロード
+            LoadSettings(iniPath);
             if (long.Parse(GlobalData.Version.Replace(".", "")) < long.Parse(GlobalData.latestVersion.Replace(".", "")))
             {
                 InfoBar.Title = "Update Available";
@@ -70,11 +79,11 @@ namespace EatenDLP
                 InfoBar.Severity = InfoBarSeverity.Informational;
                 InfoBar.IsOpen = true;
             }
+            //GetEatenDlpFolderPath();
 
 
-            GetEatenDlpFolderPath();
 
-
+            //ショートカット作成
             // exePathが存在するか
             if (File.Exists(exePath) && File.Exists(ffmpegPath))
             {
@@ -101,15 +110,34 @@ namespace EatenDLP
             }
 
 
+            //レジストリ登録
+            RegisterUninstallInfo("EatenDLP", directoryPath, executionPath, GlobalData.Version);
 
 
 
+
+
+            //アップデート後の処理
             bool isRestartedForUpdate = Environment.GetCommandLineArgs().Contains("--restarted-for-update");
             if (isRestartedForUpdate)
             {
-                // アップデート後の処理
                 Updater UpdateWin = new Updater();
                 UpdateWin.ShowDialog();
+            }
+
+
+            //アップデート後の処理
+            bool isStartedForUninstall = Environment.GetCommandLineArgs().Contains("--uninstall");
+            if (isStartedForUninstall)
+            {
+                MessageBox.Show("You CAN'T uninstall this program lol");
+                ProcessStartInfo pi = new ProcessStartInfo()
+                {
+                    FileName = "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    UseShellExecute = true,
+                };
+
+                Process.Start(pi);
             }
 
 
@@ -123,6 +151,25 @@ namespace EatenDLP
 
         }
 
+        static void RegisterUninstallInfo(string appName, string installDir, string exePath, string version)
+        {
+            string uninstallRegPath = $"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{appName}";
+
+            using (var key = Microsoft.Win32.Registry.LocalMachine.CreateSubKey(uninstallRegPath))
+            {
+                if (key == null)
+                {
+                    throw new Exception("レジストリキーの作成に失敗しました。");
+                }
+
+                key.SetValue("DisplayName", appName);
+                key.SetValue("Publisher", "minotto");
+                key.SetValue("DisplayVersion", version);
+                key.SetValue("InstallLocation", installDir);
+                key.SetValue("UninstallString", $"{exePath} --uninstall");
+                key.SetValue("DisplayIcon", exePath);
+            }
+        }
 
         private void CreateShortcut(string targetPath, string shortcutPath)
         {
@@ -298,11 +345,55 @@ namespace EatenDLP
         }
 
 
+
+
         private void URL_Changed(object sender, RoutedEventArgs e)
         {
             Download_Button_Enable();
             if (URL_textBox.Text.Contains("soundcloud")){
                 Quality_ComboBox.SelectedIndex = 2;
+            }
+            if (URL_textBox.Text.Contains("nico"))
+            {
+                string firefoxPath = null;
+                bool isFirefoxAvailable = false;
+
+                // 64-bit Windows
+                firefoxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Mozilla Firefox", "firefox.exe");
+                if (File.Exists(firefoxPath))
+                {
+                    isFirefoxAvailable = true;
+                }
+
+                // 32-bit Windows (or Firefox installed in the 32-bit Program Files on 64-bit Windows)
+                firefoxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "Mozilla Firefox", "firefox.exe");
+                if (File.Exists(firefoxPath))
+                {
+
+                    isFirefoxAvailable = true;
+                }
+
+                // Check in the local application data folder (less common but possible)
+                firefoxPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Mozilla Firefox", "firefox.exe");
+                if (File.Exists(firefoxPath))
+                {
+
+                    isFirefoxAvailable = true;
+                }
+
+
+                if (!isFirefoxAvailable)
+                {
+                    InfoBar.Title = "Firefox not found";
+                    InfoBar.Message = "Downloading from Niconico requires opening Niconico in Firefox once.";
+                    InfoBar.Severity = InfoBarSeverity.Warning;
+                    InfoBar.IsOpen = true;
+
+                }
+            }
+            else
+            {
+                InfoBar.IsOpen = false;
             }
         }
 
@@ -372,7 +463,7 @@ namespace EatenDLP
 
 
 
-        public static string GenerateCommand(string url, int quality, string outputPath)
+        public static string GenerateCommand(string url, int quality, string outputPath, string nicoOption)
         {
             // 基本コマンド
             string command = "";
@@ -408,11 +499,15 @@ namespace EatenDLP
                 case 8: // 144p (MP4)
                     formatCode = "-f bestvideo[height<=144][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best";
                     break;
-
+                default:
+                    formatCode = nicoOption;
+                    break;
+                
 
             }
 
-            formatCode = formatCode + " --no-mtime";
+            formatCode += " --no-mtime";
+
 
             command += " " + formatCode;
 
@@ -430,11 +525,11 @@ namespace EatenDLP
 
 
 
-        public async void ExecuteCommand(string command)
+        public async Task<string> ExecuteCommand(string command)
         {
+            string outputResult = "";
             try
             {
-
                 InfoBar.IsOpen = false;
                 string appDataPath = Environment.GetEnvironmentVariable("APPDATA");
                 string EatenDlpFolderPath = Path.Combine(appDataPath, "EatenDLP");
@@ -455,10 +550,12 @@ namespace EatenDLP
                     bool first100 = false;
                     bool error = false;
                     string errorContent = "";
+                    string outputContent = "";
                     process.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
                     {
                         if (e.Data != null)
                         {
+                            outputContent += e.Data + Environment.NewLine;
                             if (e.Data.Contains("100") && first100 == false)
                             {
                                 first100 = true;
@@ -466,14 +563,12 @@ namespace EatenDLP
                             else
                             {
                                 Debug.WriteLine(e.Data);
-                                ProcessOutput(e.Data);
                                 Dispatcher.Invoke(() =>
                                 {
                                     ProgressText.Text = e.Data;
                                 });
                             }
                         }
-
                     };
                     process.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs e)
                     {
@@ -491,7 +586,6 @@ namespace EatenDLP
                                 errorContent = parts[0];
                             }
                         }
-
                     };
 
                     ProgressBar.Visibility = Visibility.Visible;
@@ -508,8 +602,6 @@ namespace EatenDLP
                     ProgressBar.Visibility = Visibility.Collapsed;
                     ProgressText.Visibility = Visibility.Collapsed;
 
-
-
                     if (error == true && !errorContent.Contains("WARNING"))
                     {
                         InfoBar.Title = "Failed";
@@ -517,7 +609,7 @@ namespace EatenDLP
                         InfoBar.Severity = InfoBarSeverity.Error;
                         InfoBar.IsOpen = true;
                     }
-                    else if (process.ExitCode == 0 || errorContent.Contains("WARNING"))
+                    else if ((process.ExitCode == 0 || errorContent.Contains("WARNING")) && !command.Contains("formats"))
                     {
                         InfoBar.Title = "Success";
                         InfoBar.Message = "Download complete!";
@@ -532,12 +624,16 @@ namespace EatenDLP
                         //InfoBar.IsOpen = true;
                     }
 
-
-
                     _lastProgress = -1; // 進捗率をリセット
 
-                    Cancel_Button.Visibility = Visibility.Collapsed;
-                    Download_Button.Visibility = Visibility.Visible;
+                    if (!command.Contains("formats") || (error == true && !errorContent.Contains("WARNING")))
+                    {
+
+                        Cancel_Button.Visibility = Visibility.Collapsed;
+                        Download_Button.Visibility = Visibility.Visible;
+                    }
+
+                    outputResult = outputContent;
                 }
             }
             catch (Exception ex)
@@ -548,38 +644,13 @@ namespace EatenDLP
                 InfoBar.Message = $"Download failed! Exception: {ex.Message}";
                 InfoBar.Severity = InfoBarSeverity.Error;
                 InfoBar.IsOpen = true;
+                outputResult = $"Error: {ex.Message}";
             }
 
             Download_Button.IsEnabled = true;
 
-
             KillProcess("yt-dlp");
-        }
-
-
-
-        private void ProcessOutput(string data)
-        {
-
-            if (string.IsNullOrEmpty(data)) return;
-
-            if (data.Contains("%"))
-            {
-                string percentText = data.Replace("%", "").Trim();
-                if (double.TryParse(percentText, out double percent))
-                {
-                    // 前回の進捗率より大きい場合のみ更新
-                    if (percent > _lastProgress)
-                    {
-                        _lastProgress = percent; // 進捗率を更新
-                        Dispatcher.Invoke(() =>
-                        {
-                            ProgressBar.Value = percent;
-                            ProgressBar.IsIndeterminate = false;
-                        });
-                    }
-                }
-            }
+            return outputResult;
         }
 
 
@@ -605,12 +676,39 @@ namespace EatenDLP
 
 
 
+        public static (string lastVideo, string lastAudio) ExtractLastVideoAudio(string input)
+        {
+            string lastVideo = null;
+            string lastAudio = null;
+            string[] lines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+            // 後ろから検索して最後の "video-" を含む行を見つける
+            for (int i = lines.Length - 1; i >= 0; i--)
+            {
+                if (lines[i].Contains("video-"))
+                {
+                    lastVideo = lines[i].Substring(lines[i].IndexOf("video-")).Split(' ').First();
+                    break;
+                }
+            }
+
+            // 後ろから検索して最後の "audio-" を含む行を見つける
+            for (int i = lines.Length - 1; i >= 0; i--)
+            {
+                if (lines[i].Contains("audio-"))
+                {
+                    lastAudio = lines[i].Substring(lines[i].IndexOf("audio-")).Split(' ').First();
+                    break;
+                }
+            }
+
+            return (lastVideo, lastAudio);
+        }
 
 
 
 
-
-        private void Download_Button_Click(object sender, RoutedEventArgs e)
+        private async void Download_Button_Click(object sender, RoutedEventArgs e)
         {
             //Download_Button.IsEnabled = false;
             Download_Button.Visibility = Visibility.Collapsed;
@@ -632,8 +730,32 @@ namespace EatenDLP
                 outputPath = Location_TextBox.Text; // 例
             }
 
-            string ytDlpCommand = GenerateCommand(url, quality, outputPath);
-            Console.WriteLine(ytDlpCommand);
+
+            string ytDlpCommand = "";
+            string formatCode = "";
+            if (url.Contains("nico"))
+            { //ニコニコ動画の処理
+                formatCode += " --list-formats --cookies-from-browser firefox";
+                ytDlpCommand += " " + formatCode;
+                ytDlpCommand += $" \"{url}\"";
+
+                Debug.WriteLine(ExecuteCommand(ytDlpCommand));
+                string output = await ExecuteCommand(ytDlpCommand);
+                (string highestVideo, string highestAudio) = ExtractLastVideoAudio(output);
+                string nicoOption = "-f " + highestVideo + "+" + highestAudio;
+                ytDlpCommand = GenerateCommand(url, 114514, outputPath, "");
+                
+
+            }
+            else
+            {
+
+                ytDlpCommand = GenerateCommand(url, quality, outputPath, "");
+            }
+
+
+            
+            Debug.WriteLine("[KORE]"+ytDlpCommand);
 
             ExecuteCommand(ytDlpCommand);
 

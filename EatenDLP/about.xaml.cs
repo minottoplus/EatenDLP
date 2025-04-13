@@ -4,6 +4,8 @@ using System.IO;
 using System.Windows;
 using File = System.IO.File;
 using Path = System.IO.Path;
+using iNKORE.UI.WPF.Modern.Controls;
+using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 
 namespace EatenDLP
 {
@@ -96,6 +98,18 @@ namespace EatenDLP
             {
                 //MessageBox.Show($"Error creating shortcut: {ex.Message}");
             }
+        }
+
+        private void Image_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            MessageBox.Show("unko");
+            ProcessStartInfo pi = new ProcessStartInfo()
+            {
+                FileName = "https://github.com/pap-git/EdibleDLP",
+                UseShellExecute = true,
+            };
+
+            Process.Start(pi);
         }
     }
 }

@@ -18,6 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="assets\ad.png" />
     <None Remove="assets\info.png" />
   </ItemGroup>
 
@@ -31,6 +32,10 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="assets\ad.png" />
   </ItemGroup>
 
   <ItemGroup>
