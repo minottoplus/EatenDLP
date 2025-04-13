@@ -111,7 +111,7 @@ namespace EatenDLP
 
 
             //レジストリ登録
-            RegisterUninstallInfo("EatenDLP", directoryPath, executionPath, GlobalData.Version);
+            //RegisterUninstallInfo("EatenDLP", directoryPath, executionPath, GlobalData.Version);
 
 
 
@@ -506,7 +506,7 @@ namespace EatenDLP
 
             }
 
-            formatCode += " --no-mtime";
+            formatCode += " --no-mtime -S vcodec:h264";
 
 
             command += " " + formatCode;
@@ -609,11 +609,18 @@ namespace EatenDLP
                         InfoBar.Severity = InfoBarSeverity.Error;
                         InfoBar.IsOpen = true;
                     }
-                    else if ((process.ExitCode == 0 || errorContent.Contains("WARNING")) && !command.Contains("formats"))
+                    else if ((process.ExitCode == 0 || errorContent.Contains("WARNING")) && !command.Contains("formats") && !outputContent.Contains("already"))
                     {
                         InfoBar.Title = "Success";
                         InfoBar.Message = "Download complete!";
                         InfoBar.Severity = InfoBarSeverity.Success;
+                        InfoBar.IsOpen = true;
+                    }
+                    else if (outputContent.Contains("already"))
+                    {
+                        InfoBar.Title = "Info";
+                        InfoBar.Message = "Video has already been downloaded.";
+                        InfoBar.Severity = InfoBarSeverity.Informational;
                         InfoBar.IsOpen = true;
                     }
                     else
